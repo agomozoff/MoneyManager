@@ -138,3 +138,34 @@ let appData = {
     }
 };
 
+let btnCalculation = document.getElementById('start');
+// btnCalculation.addEventListener('click', function(){
+//     alert('рассчитать');
+// });
+
+let budgetOutput = document.querySelector('.budget-value');
+let dayBudgetOutput = document.querySelector('.daybudget-value');
+let levelOutput = document.querySelector('.level-value');
+let expensesOutput = document.querySelector('.expenses-value');
+let optionalExpensesOutput = document.querySelector('.optionalexpenses-value');
+let incomeOutput = document.querySelector('.income-value');
+let monthSavingsOutput = document.querySelector('.monthsavings-value');
+let yearSavingsOutput = document.querySelector('.yearsavings-value');
+
+let expensesItems = document.getElementsByClassName("expenses-item");
+let btnExpensesItems = document.getElementsByTagName('button')[0];
+
+let optionalExpensesItems = document.querySelectorAll('.optionalexpenses-item');
+let btnOptionalExpensesItems = document.getElementsByTagName('button')[1];
+
+let btnCountBudget = document.getElementsByTagName('button')[2];
+
+let chooseIncome = document.querySelector('.choose-income');
+let checkboxSavings = document.querySelector('#savings');
+let sumSavings = document.querySelector('#sum');
+let percentSavings = document.querySelector('#percent');
+
+let year = document.querySelector('.year-value');
+let month = document.querySelector('.month-value');
+let day = document.querySelector('.day-value');
+
