@@ -1,3 +1,15 @@
+"use strict";
+
+// Получаем все нужные элементы на странице
+let expensesItems = document.getElementsByClassName("expenses-item");
+let btnExpensesItems = document.getElementsByTagName('button')[0];
+let optionalExpensesItems = document.querySelectorAll('.optionalexpenses-item');
+let btnOptionalExpensesItems = document.getElementsByTagName('button')[1];
+let btnCountBudget = document.getElementsByTagName('button')[2];
+let incomeItem = document.querySelector('.choose-income');
+let checkboxSavings = document.querySelector('#savings');
+let sumSavings = document.querySelector('#sum');
+let percentSavings = document.querySelector('#percent');
 let btnCalculation = document.getElementById('start');
 
 let budgetOutput = document.querySelector('.budget-value');
@@ -8,30 +20,18 @@ let optionalExpensesOutput = document.querySelector('.optionalexpenses-value');
 let incomeOutput = document.querySelector('.income-value');
 let monthSavingsOutput = document.querySelector('.monthsavings-value');
 let yearSavingsOutput = document.querySelector('.yearsavings-value');
-
-let expensesItems = document.getElementsByClassName("expenses-item");
-let btnExpensesItems = document.getElementsByTagName('button')[0];
-
-let optionalExpensesItems = document.querySelectorAll('.optionalexpenses-item');
-let btnOptionalExpensesItems = document.getElementsByTagName('button')[1];
-
-let btnCountBudget = document.getElementsByTagName('button')[2];
-
-let incomeItem = document.querySelector('.choose-income');
-let checkboxSavings = document.querySelector('#savings');
-let sumSavings = document.querySelector('#sum');
-let percentSavings = document.querySelector('#percent');
-
 let year = document.querySelector('.year-value');
 let month = document.querySelector('.month-value');
 let day = document.querySelector('.day-value');
 
+// Необходимые переменные
 let money, 
     time,
     expenseItem,
     expenseItemValue;
 
-function start() {
+// Кнопка "Начать расчёт". Запрашиваем данные у пользователя
+btnCalculation.addEventListener('click', function(){
     time = prompt('Введите дату в формате YYYY-MM-DD:', 'YYYY-MM-DD');
     money = +prompt('Ваш бюджет на месяц:');
 
@@ -41,20 +41,40 @@ function start() {
     appData.budget = money;
     appData.timeData = time;
     budgetOutput.textContent = money.toFixed();
-    year.value = new Date(Date.parse(time)).getFullYear();
-    month.value = new Date(Date.parse(time)).getMonth() + 1;
+    year.value = new Date(Date.parse(time)).getFullYear(); // Превращаем введённую дату в количество милисекунд, а затем из этого количества милисекунд 
+    month.value = new Date(Date.parse(time)).getMonth() + 1; // формируем новую дату и получаем из неё значение года, месяца и дня
     day.value = new Date(Date.parse(time)).getDate();
-}
-btnCalculation.addEventListener('click', start);
 
+    // Включаем неактивные поля и кнопки
+    for(let item of expensesItems) {
+        item.removeAttribute('disabled', 'disabled');
+    }    
+    btnExpensesItems.removeAttribute('disabled', 'disabled');
+    for (let item of optionalExpensesItems){
+        item.removeAttribute('disabled', 'disabled');
+    }    
+    btnOptionalExpensesItems.removeAttribute('disabled', 'disabled');
+    btnCountBudget.removeAttribute('disabled', 'disabled');
+    incomeItem.removeAttribute('disabled', 'disabled');
+    checkboxSavings.removeAttribute('disabled', 'disabled');
+    btnCalculation.removeAttribute('disabled', 'disabled');
+
+    // Меняем фон активных кнопок
+    btnExpensesItems.style.backgroundImage = 'linear-gradient(336deg, #ffbd75, #ff964b), linear-gradient(#ffffff, #ffffff)';
+    btnOptionalExpensesItems.style.backgroundImage = 'linear-gradient(336deg, #ffbd75, #ff964b), linear-gradient(#ffffff, #ffffff)';
+    btnCountBudget.style.backgroundImage = 'linear-gradient(336deg, #ffbd75, #ff964b), linear-gradient(#ffffff, #ffffff)';
+    btnCalculation.style.backgroundImage = 'linear-gradient(90deg, rgba(241,95,122,1) 0%, rgba(233,148,160,1) 100%)';
+});
+
+// Обязательные расходы
 btnExpensesItems.addEventListener('click', function(){
     let sum = 0;
 
-    for (i = 0; i < expensesItems.length; i++) {    
+    for (i = 0; i < expensesItems.length; i++) {    // не привязываемся к количеству инпутов на странице
         expenseItem = expensesItems[i].value;
         if (typeof(expenseItem) === "string" && typeof(expenseItem) != null && expenseItem != "") {
     
-            expenseItemValue = +expensesItems[++i].value;
+            expenseItemValue = +expensesItems[++i].value; // ++i возвращает значение на 1 больше. В данном случае он вернёт сначала 1, затем 3
             if (isNaN(expenseItemValue) != true && typeof(expenseItemValue) != null && expenseItemValue != "") {
     
                 appData.expenses[expenseItem] = expenseItemValue;
@@ -101,6 +121,7 @@ btnExpensesItems.addEventListener('click', function(){
     expensesOutput.textContent = sum;
 });
 
+ // Необязательные расходы
 btnOptionalExpensesItems.addEventListener('click', function() {
     for (i = 0; i < optionalExpensesItems.length; i++) {
         appData.optionalExpenses[i] = optionalExpensesItems[i].value;
@@ -108,6 +129,7 @@ btnOptionalExpensesItems.addEventListener('click', function() {
     };
 });
 
+// Расчёт бюджета на 1 день + вывод уровня дохода 
 btnCountBudget.addEventListener('click', function() {
 
     if(appData.budget != undefined) {
@@ -127,6 +149,7 @@ btnCountBudget.addEventListener('click', function() {
     };
 });
 
+// Дополнительный доход
 incomeItem.addEventListener('input', function(){
     let items = incomeItem.value;
         if(typeof(items) === "string" && typeof(items) != null && items != "") {
@@ -144,14 +167,25 @@ incomeItem.addEventListener('input', function(){
         }
 });
 
+// Активируем пункт с накоплениями через checkbox
 checkboxSavings.addEventListener('click', function() {
     if(appData.savings == true) {
         appData.savings = false;
+        sumSavings.setAttribute('disabled', 'disabled');
+        percentSavings.setAttribute('disabled', 'disabled');
+        sumSavings.style.backgroundColor = '#faf8f5';
+        percentSavings.style.backgroundColor = '#faf8f5';
     } else {
         appData.savings = true;
+        sumSavings.removeAttribute('disabled', 'disabled');
+        percentSavings.removeAttribute('disabled', 'disabled');
+        sumSavings.style.backgroundColor = '#ffffff';
+        percentSavings.style.backgroundColor = '#ffffff';
     }
 });
 
+// Работаем с накоплениями, подсчитываем сколько накопится за месяц и за год
+// Для поля с вводом суммы
 sumSavings.addEventListener('input', function() {
     if(appData.savings == true) {
         let sum = +sumSavings.value;
@@ -160,11 +194,12 @@ sumSavings.addEventListener('input', function() {
         appData.monthIncome = sum * percent / 100 / 12;
         appData.yearIncome = sum * percent / 100;
 
-        monthSavingsOutput.textContent = appData.monthIncome.toFixed(1);
+        monthSavingsOutput.textContent = appData.monthIncome.toFixed(1);  // Приводим результат к значению с плавающей точкой. 1 символ после запятой
         yearSavingsOutput.textContent = appData.yearIncome.toFixed(1);
     }
 });
 
+// Для поля с вводом процента
 percentSavings.addEventListener('input', function() {
     if(appData.savings == true) {
         let sum = +sumSavings.value;
@@ -178,6 +213,7 @@ percentSavings.addEventListener('input', function() {
     }
 });
 
+// Создаём объект со всеми необходимыми данными
 let appData = {
     budget: money,
     timeData: time,
