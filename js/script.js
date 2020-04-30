@@ -32,19 +32,30 @@ let money,
 
 // Кнопка "Начать расчёт". Запрашиваем данные у пользователя
 btnCalculation.addEventListener('click', function(){
+    // Работа с датой
     time = prompt('Введите дату в формате YYYY-MM-DD:', 'YYYY-MM-DD');
+    let yearInput = new Date(Date.parse(time)).getFullYear(); // Превращаем введённую дату в количество милисекунд, а затем из этого количества милисекунд 
+    let monthInput = new Date(Date.parse(time)).getMonth() + 1; // формируем новую дату и получаем из неё значение года, месяца и дня
+    let dayInput = new Date(Date.parse(time)).getDate();
+    while(isNaN(yearInput) || isNaN(monthInput) || isNaN(dayInput)) {
+        time = prompt('Дата введена неверно! Введите дату в формате YYYY-MM-DD:', 'YYYY-MM-DD');
+        yearInput = new Date(Date.parse(time)).getFullYear(); // Превращаем введённую дату в количество милисекунд, а затем из этого количества милисекунд 
+        monthInput = new Date(Date.parse(time)).getMonth() + 1; // формируем новую дату и получаем из неё значение года, месяца и дня
+        dayInput = new Date(Date.parse(time)).getDate();
+    }
+    year.value = yearInput;
+    month.value = monthInput;
+    day.value = dayInput;
+    appData.timeData = time;
+    
+    // Работа с бюджетом
     money = +prompt('Ваш бюджет на месяц:');
-
     if(isNaN(money) || money == "" || money == null) {
         money = +prompt('Вы ввели некорректные данные! Введите ваш бюджет на месяц:');
     }
     appData.budget = money;
-    appData.timeData = time;
     budgetOutput.textContent = money.toFixed();
-    year.value = new Date(Date.parse(time)).getFullYear(); // Превращаем введённую дату в количество милисекунд, а затем из этого количества милисекунд 
-    month.value = new Date(Date.parse(time)).getMonth() + 1; // формируем новую дату и получаем из неё значение года, месяца и дня
-    day.value = new Date(Date.parse(time)).getDate();
-
+    
     // Включаем неактивные поля и кнопки
     for(let item of expensesItems) {
         item.removeAttribute('disabled', 'disabled');
@@ -61,69 +72,43 @@ btnCalculation.addEventListener('click', function(){
 
     // Меняем фон активных кнопок
     btnExpensesItems.style.backgroundImage = 'linear-gradient(336deg, #ffbd75, #ff964b), linear-gradient(#ffffff, #ffffff)';
+    btnExpensesItems.style.color = '#ffffff';
     btnOptionalExpensesItems.style.backgroundImage = 'linear-gradient(336deg, #ffbd75, #ff964b), linear-gradient(#ffffff, #ffffff)';
+    btnOptionalExpensesItems.style.color = '#ffffff';
     btnCountBudget.style.backgroundImage = 'linear-gradient(336deg, #ffbd75, #ff964b), linear-gradient(#ffffff, #ffffff)';
-    btnCalculation.style.backgroundImage = 'linear-gradient(90deg, rgba(241,95,122,1) 0%, rgba(233,148,160,1) 100%)';
+    btnCountBudget.style.color = '#ffffff';
+    btnCalculation.style.backgroundImage = 'linear-gradient(90deg, rgba(62,218,125,1) 0%, rgba(20,148,52,1) 100%)';
+    btnCalculation.style.color = '#ffffff';
 });
 
 // Обязательные расходы
 btnExpensesItems.addEventListener('click', function(){
     let sum = 0;
 
-    for (i = 0; i < expensesItems.length; i++) {    // не привязываемся к количеству инпутов на странице
-        expenseItem = expensesItems[i].value;
-        if (typeof(expenseItem) === "string" && typeof(expenseItem) != null && expenseItem != "") {
-    
-            expenseItemValue = +expensesItems[++i].value; // ++i возвращает значение на 1 больше. В данном случае он вернёт сначала 1, затем 3
-            if (isNaN(expenseItemValue) != true && typeof(expenseItemValue) != null && expenseItemValue != "") {
-    
+    for (let i = 0; i < expensesItems.length; i++) {
+        if(typeof(expensesItems[i].value) === "string" && typeof(expensesItems[i].value) != null && expensesItems[i].value != "") {
+            expenseItem = expensesItems[i].value;
+            document.querySelector('.error-expenses').textContent = '';
+
+            expenseItemValue = +expensesItems[++i].value;
+            //console.log(expensesItems[++i]);
+            if(isNaN(expenseItemValue) == false && typeof(expenseItemValue) != null && expenseItemValue != "") {
+                
                 appData.expenses[expenseItem] = expenseItemValue;
                 sum += expenseItemValue;
             } else {
-                let isCorrect = false;
-    
-                while (isCorrect == false) {
-                    expenseItemValue = +prompt('Вы допустили ошибку при вводе! Укажите во сколько рублей обойдётся покупка?');
-                    if (isNaN(expenseItemValue) != true && typeof(expenseItemValue) != null && expenseItemValue != "") {
-                        isCorrect = true;
-                    }
-                }
-                appData.expenses[expenseItem] = expenseItemValue;
+                document.querySelector('.error-expenses').textContent = 'Вы допустили ошибку при вводе цены! Цена должна состоять только из цифр!';
             }
         } else {
-            let isCorrect = false;
-    
-            while (isCorrect == false) {
-                expenseItem = prompt('Вы допустили ошибку при вводе! Введите обязательную статью расходов в этом месяце заново:');
-                if (typeof(expenseItem) === "string" && typeof(expenseItem) != null && expenseItem != "") {
-                    isCorrect = true;
-                };
-            };
-    
-            expenseItemValue = +prompt('Во сколько рублей обойдётся?');
-    
-            if (isNaN(expenseItemValue) != true && typeof(expenseItemValue) != null && expenseItemValue != "") {
-    
-                appData.expenses[expenseItem] = expenseItemValue;
-            } else {
-                let isCorrect = false;
-    
-                while (isCorrect == false) {
-                    expenseItemValue = +prompt('Вы допустили ошибку при вводе! Укажите во сколько рублей обойдётся покупка?');
-                    if (isNaN(expenseItemValue) != true && typeof(expenseItemValue) != null && expenseItemValue != "") {
-                        isCorrect = true;
-                    }
-                }
-                appData.expenses[expenseItem] = expenseItemValue;
-            };
-        };
-    };
+            document.querySelector('.error-expenses').textContent = 'Вы допустили ошибку при вводе наименования расхода!';
+        }
+    }
     expensesOutput.textContent = sum;
 });
 
  // Необязательные расходы
 btnOptionalExpensesItems.addEventListener('click', function() {
-    for (i = 0; i < optionalExpensesItems.length; i++) {
+    for (let i = 0; i < optionalExpensesItems.length; i++) {
         appData.optionalExpenses[i] = optionalExpensesItems[i].value;
         optionalExpensesOutput.textContent += appData.optionalExpenses[i] + ' '; 
     };
@@ -133,7 +118,7 @@ btnOptionalExpensesItems.addEventListener('click', function() {
 btnCountBudget.addEventListener('click', function() {
 
     if(appData.budget != undefined) {
-        appData["moneyPerDay"] = +(appData["budget"] / 30).toFixed(1);
+        appData["moneyPerDay"] = +((appData["budget"] - expensesOutput.textContent) / 30).toFixed(1);
         dayBudgetOutput.textContent = appData["moneyPerDay"];
 
         if (appData.moneyPerDay < 100) {
@@ -152,18 +137,9 @@ btnCountBudget.addEventListener('click', function() {
 // Дополнительный доход
 incomeItem.addEventListener('input', function(){
     let items = incomeItem.value;
-        if(typeof(items) === "string" && typeof(items) != null && items != "") {
-            appData.income = items.split(", ");
+        if(typeof(items) === "string") {
+            appData.income = items.split(",");
             incomeOutput.textContent = appData.income;
-        } else {
-            isCorrect = true;
-            while(isCorrect) {
-                items = prompt("Вы неверно ввели данные! Введите через запятую информацию о дополнительном доходе");
-                if(typeof(items) === "string" && typeof(items) != null && items != "") {
-                    appData.income = items.split(", ");
-                    isCorrect = false;
-                }
-            }
         }
 });
 
@@ -188,28 +164,40 @@ checkboxSavings.addEventListener('click', function() {
 // Для поля с вводом суммы
 sumSavings.addEventListener('input', function() {
     if(appData.savings == true) {
-        let sum = +sumSavings.value;
+        let sum = +sumSavings.value,
             percent = +percentSavings.value;
         
-        appData.monthIncome = sum * percent / 100 / 12;
-        appData.yearIncome = sum * percent / 100;
+        if (isNaN(sum) == false && isNaN(percent) == false) {
+            document.querySelector('.error-savings').textContent = '';
+            appData.monthIncome = sum * percent / 100 / 12;
+            appData.yearIncome = sum * percent / 100;
 
-        monthSavingsOutput.textContent = appData.monthIncome.toFixed(1);  // Приводим результат к значению с плавающей точкой. 1 символ после запятой
-        yearSavingsOutput.textContent = appData.yearIncome.toFixed(1);
+            monthSavingsOutput.textContent = appData.monthIncome.toFixed(1);  // Приводим результат к значению с плавающей точкой. 1 символ после запятой
+            yearSavingsOutput.textContent = appData.yearIncome.toFixed(1);
+        } else {
+            document.querySelector('.error-savings').textContent = 'Вы ввели неверные данные! Поля "Сумма" и "Процент" могут содержать только цифры!';
+        }
+        
     }
 });
 
 // Для поля с вводом процента
 percentSavings.addEventListener('input', function() {
     if(appData.savings == true) {
-        let sum = +sumSavings.value;
+        let sum = +sumSavings.value,
             percent = +percentSavings.value;
         
-        appData.monthIncome = sum * percent / 100 / 12;
-        appData.yearIncome = sum * percent / 100;
+        if (isNaN(sum) == false && isNaN(percent) == false) {
+            document.querySelector('.error-savings').textContent = '';
+            appData.monthIncome = sum * percent / 100 / 12;
+            appData.yearIncome = sum * percent / 100;
 
-        monthSavingsOutput.textContent = appData.monthIncome.toFixed(1);
-        yearSavingsOutput.textContent = appData.yearIncome.toFixed(1);
+            monthSavingsOutput.textContent = appData.monthIncome.toFixed(1);  // Приводим результат к значению с плавающей точкой. 1 символ после запятой
+            yearSavingsOutput.textContent = appData.yearIncome.toFixed(1);
+        } else {
+            document.querySelector('.error-savings').textContent = 'Вы ввели неверные данные! Поля "Сумма" и "Процент" могут содержать только цифры!';
+        }
+        
     }
 });
 

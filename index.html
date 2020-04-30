@@ -20,31 +20,33 @@
     <div class="main">
         <div class="data">
             <div class="choose-expenses">Введите обязательные расходы</div>
-            <input class="expenses-item" type="text" id="expenses_1" placeholder="Наименование" disabled="disabled">
-			<input class="expenses-item" type="text" id="expenses_2" placeholder="Цена" disabled="disabled">
-			<input class="expenses-item" type="text" id="expenses_3" placeholder="Наименование" disabled="disabled">
-			<input class="expenses-item" type="text" id="expenses_4" placeholder="Цена" disabled="disabled">
-            <button class="expenses-item-btn" disabled="disabled">Утвердить</button>
+            <input class="expenses-item" type="text" id="expenses_1" placeholder="Наименование" disabled="disabled" autocomplete="off">
+			<input class="expenses-item" type="text" id="expenses_2" placeholder="Цена" disabled="disabled" autocomplete="off">
+			<input class="expenses-item" type="text" id="expenses_3" placeholder="Наименование" disabled="disabled" autocomplete="off">
+            <input class="expenses-item" type="text" id="expenses_4" placeholder="Цена" disabled="disabled" autocomplete="off">
+            <p class="error-expenses error"></p>
+            <button class="expenses-item-btn" disabled="disabled" autocomplete="off">Утвердить</button>
             
             <div class="optionalexpenses">Введите необязательные расходы</div>
-			<input class="optionalexpenses-item" type="text" id="optionalexpenses_1" disabled="disabled">
-			<input class="optionalexpenses-item" type="text" id="optionalexpenses_2" disabled="disabled">
-			<input class="optionalexpenses-item" type="text" id="optionalexpenses_3" disabled="disabled">
-            <button class="optionalexpenses-btn" disabled="disabled">Утвердить</button>
+			<input class="optionalexpenses-item" type="text" id="optionalexpenses_1" disabled="disabled" autocomplete="off">
+			<input class="optionalexpenses-item" type="text" id="optionalexpenses_2" disabled="disabled" autocomplete="off">
+			<input class="optionalexpenses-item" type="text" id="optionalexpenses_3" disabled="disabled" autocomplete="off">
+            <button class="optionalexpenses-btn" disabled="disabled" autocomplete="off">Утвердить</button>
             
             <div class="count-budget">Расчет дневного бюджета</div>
-            <button class="count-budget-btn" disabled="disabled">Рассчитать</button>
+            <button class="count-budget-btn" disabled="disabled" autocomplete="off">Рассчитать</button>
             
             <div class="choose-income-label">Введите статьи возможного дохода через запятую</div>
-            <input class="choose-income" type="text" id="income" disabled="disabled">
+            <input class="choose-income" type="text" id="income" disabled="disabled" autocomplete="off">
             
             <div class="checksavings">Есть ли накопления: 
-                <input disabled="disabled" id="savings" type="checkbox" />
+                <input disabled="disabled" autocomplete="off" id="savings" type="checkbox" />
             </div>
             <label for="sum">Сумма</label>
-			<input class="choose-sum" id="sum" type="text" disabled="disabled">
+			<input class="choose-sum" id="sum" type="text" disabled="disabled" autocomplete="off">
 			<label for="percent">Процент</label>
-            <input class="choose-percent" id="percent" type="text" disabled="disabled">
+            <input class="choose-percent" id="percent" type="text" disabled="disabled" autocomplete="off">
+            <p class="error-savings error"></p>
             
             <div class="open">
                 <button class="start" id="start">Начать расчет</button>
@@ -79,15 +81,15 @@
             <div class="time-data">
                 <div class="year">
                     Год:
-                    <input class="year-value" type="text" readonly>
+                    <input class="year-value" type="text" readonly autocomplete="off">
                 </div>
                 <div class="month">
                     Месяц:
-                    <input class="month-value" type="text" readonly>
+                    <input class="month-value" type="text" readonly autocomplete="off">
                 </div>
                 <div class="day">
                     День:
-                    <input class="day-value" type="text" readonly>
+                    <input class="day-value" type="text" readonly autocomplete="off">
                 </div>
             </div>
         </div>
